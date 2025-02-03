@@ -5,10 +5,16 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_library(CollatzLib STATIC collatzseq.cpp collatzseq.h)
 target_include_directories(CollatzLib INTERFACE .)
-#target_compile_features(PointSetsFitting PUBLIC cxx_std_17)
+
+include(FetchContent)
+FetchContent_Declare(
+    argparse
+    GIT_REPOSITORY https://github.com/p-ranav/argparse.git
+)
+FetchContent_MakeAvailable(argparse)
 
 add_executable(CollatzMain csMain.cpp)
-target_link_libraries(CollatzMain CollatzLib)
+target_link_libraries(CollatzMain CollatzLib argparse)
 
 # Test the Collatz sequence project
 option(TESTCS "Test library" OFF)
@@ -16,7 +22,6 @@ IF(${TESTCS})
     MESSAGE(STATUS "Tests activated")
 
     # Download and build gtest
-    include(FetchContent)
     FetchContent_Declare(
         googletest
         # Specify the commit you depend on and update it regularly.

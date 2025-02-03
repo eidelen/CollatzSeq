@@ -2,6 +2,7 @@
 #define COLLATZ_SEQ_H
 
 #include <vector>
+#include <unordered_map>
 
 /**
  * Computes a single Collatz sequence step.
@@ -12,7 +13,7 @@ class Collatz
 {
 public:
     virtual std::vector<unsigned int> getSequence(unsigned int n) = 0;
-    virtual std::vector<unsigned int> getLongestSequence(unsigned int start, unsigned int end) = 0;
+    virtual std::vector<unsigned int> getLongestSequence(unsigned int start, unsigned int end);
 };
 
 class SimpleCollatz: public Collatz
@@ -21,7 +22,29 @@ public:
     SimpleCollatz();
     ~SimpleCollatz();
     std::vector<unsigned int> getSequence(unsigned int n) override;
-    std::vector<unsigned int> getLongestSequence(unsigned int start, unsigned int end) override;
+};
+
+class RecursiveCollatz: public Collatz
+{
+public:
+    RecursiveCollatz();
+    ~RecursiveCollatz();
+    std::vector<unsigned int> getSequence(unsigned int n) override;
+
+private:
+    static void getSequence(unsigned int n, std::vector<unsigned int>& seq);
+};
+
+class HashCollatz: public Collatz
+{
+public:
+    HashCollatz();
+    ~HashCollatz();
+    std::vector<unsigned int> getSequence(unsigned int n) override;
+
+private:
+    static void getSequence(unsigned int n, std::vector<unsigned int>& seq);
+    std::unordered_map<unsigned int, size_t> mem;
 };
 
 #endif

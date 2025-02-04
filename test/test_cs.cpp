@@ -31,7 +31,7 @@ TEST(Simple, LongestSuequence)
     ASSERT_TRUE(std::equal(seq.begin(), seq.end(), prep_3_seq.begin()));
 }
 
-TEST(Simple, LongestSuequence1Mega)
+TEST(Simple, LongestSuequenceLong)
 {
     std::shared_ptr<Collatz> c(new SimpleCollatz());
     auto seq = c->getLongestSequence(1, 100000);
@@ -56,7 +56,7 @@ TEST(Recursive, LongestSuequence)
     ASSERT_TRUE(std::equal(seq.begin(), seq.end(), prep_3_seq.begin()));
 }
 
-TEST(Recursive, LongestSuequence1Mega)
+TEST(Recursive, LongestSuequenceLong)
 {
     std::shared_ptr<Collatz> c(new RecursiveCollatz());
     auto seq = c->getLongestSequence(1, 100000);
@@ -82,7 +82,7 @@ TEST(Hash, LongestSuequence)
     ASSERT_TRUE(std::equal(seq.begin(), seq.end(), prep_3_seq.begin()));
 }
 
-TEST(Hash, LongestSuequence1Mega)
+TEST(Hash, LongestSuequenceLong)
 {
     std::shared_ptr<Collatz> c(new HashCollatz());
     auto seq = c->getLongestSequence(1, 100000);

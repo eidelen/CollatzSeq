@@ -35,15 +35,15 @@ private:
     static void getSequence(unsigned int n, std::vector<unsigned int>& seq);
 };
 
-class HashCollatz: public Collatz
+class HashCollatz: public SimpleCollatz
 {
 public:
     HashCollatz();
     ~HashCollatz();
-    std::vector<unsigned int> getSequence(unsigned int n) override;
+    std::vector<unsigned int> getLongestSequence(unsigned int start, unsigned int end) override;
 
 private:
-    static void getSequence(unsigned int n, std::vector<unsigned int>& seq);
+    size_t getNStoreDepth(unsigned int n);
     std::unordered_map<unsigned int, size_t> mem;
 };
 

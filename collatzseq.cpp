@@ -87,25 +87,42 @@ HashCollatz::~HashCollatz()
 
 }
 
-void HashCollatz::getSequence(unsigned int n, std::vector<unsigned int> &seq)
+std::vector<unsigned int> HashCollatz::getLongestSequence(unsigned int start, unsigned int end)
 {
-    seq.push_back(n);
+    size_t maxLength = 0;
+    unsigned int maxLenN = start;
 
+    // search just for longest
+    for(unsigned int n = start; n < end + 1; n++)
+    {
+        size_t thisLen = getNStoreDepth(n);
+        if(thisLen > maxLength)
+        {
+            maxLength = thisLen;
+            maxLenN = n;
+        }
+    }
+
+    // this is fast
+    return getSequence(maxLenN);
+}
+
+size_t HashCollatz::getNStoreDepth(unsigned int n)
+{
     if(n == 1)
-        return;
+        return 1;
 
-    // check if value was already computed
-    //if(mem.find(n) == mem.end())
-    //{
-        getSequence(step(n), seq);
-    //}
+    // cut the recursion - check if value was already computed
+    if(mem.find(n) == mem.end())
+    {
+        size_t currentDepth = getNStoreDepth(step(n)) + 1;
+        mem[n] = currentDepth;
+        return currentDepth;
+    }
+    else
+    {
+        return mem[n];
+    }
 }
 
-
-std::vector<unsigned int> HashCollatz::getSequence(unsigned int n)
-{
-    std::vector<unsigned int> seq;
-    getSequence(n, seq);
-    return seq;
-}
 

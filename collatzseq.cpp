@@ -107,7 +107,7 @@ std::vector<unsigned int> HashCollatz::getLongestSequence(unsigned int start, un
     return getSequence(maxLenN);
 }
 
-size_t HashCollatz::getNStoreDepth(unsigned int n)
+size_t HashCollatz::getNStoreDepth(const unsigned int& n)
 {
     if(n == 1)
         return 1;

@@ -43,7 +43,7 @@ public:
     std::vector<unsigned int> getLongestSequence(unsigned int start, unsigned int end) override;
 
 private:
-    size_t getNStoreDepth(unsigned int n);
+    size_t getNStoreDepth(const unsigned int &n);
     std::unordered_map<unsigned int, size_t> mem;
 };
 

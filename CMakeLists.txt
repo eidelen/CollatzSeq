@@ -16,6 +16,9 @@ FetchContent_MakeAvailable(argparse)
 add_executable(CollatzMain csMain.cpp)
 target_link_libraries(CollatzMain CollatzLib argparse)
 
+add_executable(ThreadingCollatzMain threadingMain.cpp)
+target_link_libraries(ThreadingCollatzMain CollatzLib argparse)
+
 # Test the Collatz sequence project
 option(TESTCS "Test library" OFF)
 IF(${TESTCS})

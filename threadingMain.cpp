@@ -5,6 +5,7 @@
 
 #include <argparse/argparse.hpp>
 
+#include <cmath>
 #include "collatzseq.h"
 
 
@@ -15,8 +16,9 @@ int main(int argc, char** argv)
 
     // Parse input ...
     argparse::ArgumentParser collatzArgs("Collatz Sequence");
-    collatzArgs.add_argument("start_range").help("Start range").scan<'i', unsigned int>();
-    collatzArgs.add_argument("end_range").help("End range").scan<'i', unsigned int>();
+    collatzArgs.add_argument("start_range").help("Start range").scan<'u', unsigned int>();
+    collatzArgs.add_argument("end_range").help("End range").scan<'u', unsigned int>();
+    collatzArgs.add_argument("block_size").help("Computation Block size").scan<'u', unsigned int>();
 
     try
     {
@@ -29,30 +31,42 @@ int main(int argc, char** argv)
         std::exit(1);
     }
 
-    //unsigned int startValue = collatzArgs.get<unsigned int>("start_range");
-    //unsigned int endValue = collatzArgs.get<unsigned int>("end_range");
+    NumT startValue = collatzArgs.get<unsigned int>("start_range");
+    NumT endValue = collatzArgs.get<unsigned int>("end_range");
+    NumT blockSize = collatzArgs.get<unsigned int>("block_size");
 
-    NumT blockSize = 1000000;
+    size_t nbrIterations = std::ceil((endValue - startValue) / ((double)blockSize));
 
-    for(size_t i = 0; i < 40; i++)
+    std::vector<NumT> maxSeq;
+
+    for(size_t i = 0; i < nbrIterations; i++)
     {
         std::shared_ptr<Collatz> cmt(new MultiThreadCollatz(4));
 
-        NumT startRange = i * blockSize + 1;
-        NumT endRange = startRange + blockSize - 1;
-
-        std::cout << "Start runtime tests of -- Collatz Multi Threading  --" << std::endl;
-        std::cout << "Compute longest Collatz sequence between " << startRange << " and " << endRange << " ..." << std::endl;
+        NumT iterStart = startValue + i * blockSize;
+        NumT iterEnd = iterStart + blockSize - 1;
 
         auto startTime = std::chrono::high_resolution_clock::now();
-        auto seq = cmt->getLongestSequence(startRange, endRange);
+        auto seq = cmt->getLongestSequence(iterStart, iterEnd);
         auto endTime = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-        size_t sequenceLength = seq.size();
-        unsigned int maxValueInSeq = *std::max_element(seq.begin(), seq.end());
 
-        std::cout << "The longest sequence starts with " << seq[0] << ", reaches the max value " << maxValueInSeq << " and has the length of " << sequenceLength << std::endl;
-        std::cout << "The computation took " << duration.count() << " ms" << std::endl << std::endl;
+        /* Debug Output
+        std::cout << "Start runtime tests of -- Collatz Multi Threading  --" << std::endl;
+        std::cout << "Compute longest Collatz sequence between " << iterStart << " and " << iterEnd << " ..." << std::endl;
+        std::cout << "The computation took " << duration.count() << " ms" << std::endl;
+        */
+
+        // check if new max was reached
+        if(maxSeq.size() < seq.size())
+        {
+            maxSeq = seq;
+            NumT maxValueInSeq = *std::max_element(maxSeq.begin(), maxSeq.end());
+            std::cout << "Found new maximum sequence: n=" << maxSeq[0] << " , length=" << maxSeq.size() << " , maxValue=" << maxValueInSeq << std::endl;
+        }
+
+        double throughputNpMS = blockSize / ((double)duration.count());
+        std::cout << "Progress: " << ((double)i+1)/nbrIterations*100.0 << "% ,  Throughput N/ms: " << throughputNpMS << std::endl;
     }
 
 }

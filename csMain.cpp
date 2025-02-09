@@ -37,7 +37,9 @@ int main(int argc, char** argv)
     std::vector< std::tuple<std::string, std::shared_ptr<Collatz>> > tests =
         { {"SimpleCollatz", std::shared_ptr<Collatz>(new SimpleCollatz())},
           {"RecursiveCollatz", std::shared_ptr<Collatz>(new RecursiveCollatz())},
-          {"HashCollatz", std::shared_ptr<Collatz>(new HashCollatz())}};
+          {"HashCollatz", std::shared_ptr<Collatz>(new HashCollatz())},
+          {"MultiThreadCollatz", std::shared_ptr<Collatz>(new MultiThreadCollatz(4))}};
+
 
     // Execute tests...
     for( auto[name, col]: tests )

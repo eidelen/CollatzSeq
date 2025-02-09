@@ -3,17 +3,20 @@
 
 #include <vector>
 #include <unordered_map>
+#include <cstdint>
+
+using NumT = std::uint64_t;
 
 /**
  * Computes a single Collatz sequence step.
  */
-unsigned int step(const unsigned int& n);
+NumT step(const NumT& n);
 
 class Collatz
 {
 public:
-    virtual std::vector<unsigned int> getSequence(unsigned int n) = 0;
-    virtual std::vector<unsigned int> getLongestSequence(unsigned int start, unsigned int end);
+    virtual std::vector<NumT> getSequence(NumT n) = 0;
+    virtual std::vector<NumT> getLongestSequence(NumT start, NumT end);
 };
 
 class SimpleCollatz: public Collatz
@@ -21,7 +24,7 @@ class SimpleCollatz: public Collatz
 public:
     SimpleCollatz();
     ~SimpleCollatz();
-    std::vector<unsigned int> getSequence(unsigned int n) override;
+    std::vector<NumT> getSequence(NumT n) override;
 };
 
 class RecursiveCollatz: public Collatz
@@ -29,10 +32,10 @@ class RecursiveCollatz: public Collatz
 public:
     RecursiveCollatz();
     ~RecursiveCollatz();
-    std::vector<unsigned int> getSequence(unsigned int n) override;
+    std::vector<NumT> getSequence(NumT n) override;
 
 private:
-    static void getSequence(unsigned int n, std::vector<unsigned int>& seq);
+    static void getSequence(NumT n, std::vector<NumT>& seq);
 };
 
 class HashCollatz: public SimpleCollatz
@@ -40,11 +43,31 @@ class HashCollatz: public SimpleCollatz
 public:
     HashCollatz();
     ~HashCollatz();
-    std::vector<unsigned int> getLongestSequence(unsigned int start, unsigned int end) override;
+    std::vector<NumT> getLongestSequence(NumT start, NumT end) override;
 
 private:
-    size_t getNStoreDepth(const unsigned int &n);
-    std::unordered_map<unsigned int, size_t> mem;
+    size_t getNStoreDepth(NumT n);
+    std::unordered_map<NumT, size_t> mem;
+};
+
+
+class MultiThreadCollatz : public Collatz
+{
+public:
+    // Constructor takes the number of threads to be used.
+    MultiThreadCollatz(size_t nThreads);
+    ~MultiThreadCollatz();
+
+    // Return the full Collatz sequence for a single number n
+    // (similar to SimpleCollatz).
+    std::vector<NumT> getSequence(NumT n) override;
+
+    // Find the longest Collatz sequence in the range [start, end] using nThreads.
+    std::vector<NumT> getLongestSequence(NumT start, NumT end) override;
+
+private:
+    void processRange(size_t index, NumT rangeStart, NumT rangeEnd, std::vector<std::pair<size_t, NumT>>& threadResults);
+    size_t nThreads;
 };
 
 #endif

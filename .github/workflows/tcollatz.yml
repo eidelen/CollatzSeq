@@ -1,0 +1,22 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [ main ]
+
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: sudo apt-get install -y build-essential
+    - name: configure
+      run: mkdir build && cd build && cmake -DTESTCS=ON ..
+    - name: make
+      run: cd build && make
+    - name: Run Test
+      run: cd build/lib && ./runCSTests

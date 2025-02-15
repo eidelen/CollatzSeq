@@ -37,8 +37,9 @@ int main(int argc, char** argv)
 
     size_t nbrIterations = std::ceil((endValue - startValue) / ((double)blockSize));
 
-    std::vector<NumT> maxSeq;
+    auto totalStartTime = std::chrono::high_resolution_clock::now();
 
+    std::vector<NumT> maxSeq;
     for(size_t i = 0; i < nbrIterations; i++)
     {
         std::shared_ptr<Collatz> cmt(new MultiThreadCollatz(4));
@@ -69,4 +70,6 @@ int main(int argc, char** argv)
         std::cout << "Progress: " << ((double)i+1)/nbrIterations*100.0 << "% ,  Throughput N/ms: " << throughputNpMS << std::endl;
     }
 
+    auto totalDuration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - totalStartTime);
+    std::cout << "Total computation time [ms]: " << totalDuration.count() << std::endl;
 }

@@ -165,13 +165,18 @@ void MultiThreadCollatz::processRange(size_t index, NumT rangeStart, NumT rangeE
 
     for (NumT n = rangeStart; n <= rangeEnd; ++n)
     {
-        // Use the very normal getSequence, without any data structure
-        const size_t seqLen = getSequence(n).size();
-        if (seqLen > maxLen)
-        {
-            maxLen = seqLen;
-            bestN  = n;
-        }
+        // Given the Collatz rules, a number twice as large L as N has a sequence which is longer by 1.
+        // Therefore, if L is withing the range then there is no need to compute N.
+        //if( 2 * n > rangeEnd) -> this makes it slower.
+        //{
+            // Use the very normal getSequence, without any data structure
+            const size_t seqLen = getSequence(n).size();
+            if (seqLen > maxLen)
+            {
+                maxLen = seqLen;
+                bestN  = n;
+            }
+        //}
     }
 
     // Store the results
